@@ -7,9 +7,9 @@ plugins {
     idea
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "6.1.0"
+    id("com.google.devtools.ksp")
     kotlin("jvm")
     kotlin("plugin.serialization")
-    kotlin("kapt")
     id("org.jetbrains.dokka") version "1.4.30"
     id("com.mineinabyss.shared-gradle") version "0.0.6"
 }
@@ -51,7 +51,7 @@ repositories {
     maven("https://repo.dmulloy2.net/nexus/repository/public/") //ProtocolLib
     maven("https://maven.sk89q.com/repo/") //WorldGuard/Edit
     maven("https://jitpack.io")
-    maven("https://mvn.lumine.io/repository/maven-releases/")
+    google()
 //    mavenLocal()
 }
 
@@ -70,7 +70,7 @@ dependencies {
     compileOnly("com.ticxo.modelengine:api:R2.1.6")
 
     compileOnly(project(":processor"))
-    kapt(project(":processor"))
+    ksp(project(":processor"))
 }
 
 tasks {

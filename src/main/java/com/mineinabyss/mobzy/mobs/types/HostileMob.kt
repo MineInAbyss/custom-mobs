@@ -1,12 +1,10 @@
 package com.mineinabyss.mobzy.mobs.types
 
-import com.mieninabyss.mobzy.processor.GenerateFromBase
 import com.mineinabyss.idofront.nms.aliases.NMSEntityType
 import com.mineinabyss.idofront.nms.aliases.NMSWorld
-import com.mineinabyss.mobzy.api.pathfindergoals.addPathfinderGoal
-import com.mineinabyss.mobzy.api.pathfindergoals.addTargetSelector
 import com.mineinabyss.mobzy.ecs.goals.minecraft.*
 import com.mineinabyss.mobzy.ecs.goals.targetselectors.minecraft.TargetNearbyPlayer
+import com.mineinabyss.mobzy.processor.GenerateFromBase
 import net.minecraft.server.v1_16_R3.EntityMonster
 
 @GenerateFromBase(base = MobBase::class, createFor = [EntityMonster::class])

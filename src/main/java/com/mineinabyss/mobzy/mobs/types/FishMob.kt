@@ -1,7 +1,7 @@
 package com.mineinabyss.mobzy.mobs.types
 
-import com.mieninabyss.mobzy.processor.GenerateFromBase
 import com.mineinabyss.idofront.nms.aliases.*
+import com.mineinabyss.mobzy.processor.GenerateFromBase
 import net.minecraft.server.v1_16_R3.EntityFishSchool
 
 @GenerateFromBase(base = MobBase::class, createFor = [EntityFishSchool::class])

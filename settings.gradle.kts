@@ -1,14 +1,17 @@
 pluginManagement {
+    val kotlinVersion: String by settings
+    val kspVersion: String by settings
+
     repositories {
         gradlePluginPortal()
+        google()
         maven("https://repo.mineinabyss.com/releases")
     }
 
     plugins {
-        val kotlinVersion: String by settings
         kotlin("jvm") version kotlinVersion
         kotlin("plugin.serialization") version kotlinVersion
-        kotlin("kapt") version kotlinVersion
+        id("com.google.devtools.ksp") version kspVersion
     }
 }
 

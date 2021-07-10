@@ -1,4 +1,4 @@
-package com.mieninabyss.mobzy.processor
+package com.mineinabyss.mobzy.processor
 
 import java.io.File
 import javax.lang.model.element.TypeElement

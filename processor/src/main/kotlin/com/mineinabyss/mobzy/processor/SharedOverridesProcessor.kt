@@ -1,6 +1,5 @@
-package com.mieninabyss.mobzy.processor
+package com.mineinabyss.mobzy.processor
 
-import com.google.auto.service.AutoService
 import com.mineinabyss.idofront.nms.aliases.NMSEntityType
 import com.mineinabyss.idofront.nms.aliases.NMSWorld
 import com.squareup.kotlinpoet.*
@@ -8,8 +7,8 @@ import com.squareup.kotlinpoet.classinspector.elements.ElementsClassInspector
 import com.squareup.kotlinpoet.metadata.KotlinPoetMetadataPreview
 import com.squareup.kotlinpoet.metadata.specs.toTypeSpec
 import java.io.File
-import javax.annotation.processing.*
-import javax.lang.model.SourceVersion
+import javax.annotation.processing.AbstractProcessor
+import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.element.TypeElement
 import javax.lang.model.type.DeclaredType
 import javax.lang.model.type.TypeMirror
@@ -22,9 +21,6 @@ import kotlin.reflect.typeOf
 annotation class GenerateFromBase(val base: KClass<*>, val createFor: Array<KClass<*>>)
 
 @Suppress("unused")
-@AutoService(Processor::class)
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
-@SupportedOptions(SharedOverridesProcessor.KAPT_KOTLIN_GENERATED_OPTION_NAME)
 @ExperimentalStdlibApi
 @KotlinPoetMetadataPreview
 class SharedOverridesProcessor : AbstractProcessor() {
@@ -39,17 +35,18 @@ class SharedOverridesProcessor : AbstractProcessor() {
     private val classInspector by lazy { ElementsClassInspector.create(elements, types) }
 
     override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
+        error("Test")
         roundEnv.getElementsAnnotatedWith(GenerateFromBase::class.java)
-                .filterIsInstance<TypeElement>()
-                .forEach { element ->
-                    val annotation = element.getAnnotation(GenerateFromBase::class.java)
-                    val base = (getTypeMirror { annotation.base } as DeclaredType).asElement() as TypeElement
-                    val targets = getTypeMirrors { annotation.createFor }
+            .filterIsInstance<TypeElement>()
+            .forEach { element ->
+                val annotation = element.getAnnotation(GenerateFromBase::class.java)
+                val base = (getTypeMirror { annotation.base } as DeclaredType).asElement() as TypeElement
+                val targets = getTypeMirrors { annotation.createFor }
 
-                    targets?.forEach { target ->
-                        createTargetsFromBase(base, target)
-                    }
+                targets?.forEach { target ->
+                    createTargetsFromBase(base, target)
                 }
+            }
         return true
     }
 
@@ -66,14 +63,17 @@ class SharedOverridesProcessor : AbstractProcessor() {
 
         //create class
         val newClass = TypeSpec.classBuilder(fileName)
-                .superclass(targetMirror.asTypeName())
-                .primaryConstructor(FunSpec.constructorBuilder()
-                        .addParameter("world", NMSWorld::class)
-                        .addParameter("type", typeOf<NMSEntityType<*>>().asTypeName())
-                        .build())
-                .addSuperclassConstructorParameter("type as EntityTypes<$targetMirror>, world".replace(' ', '·')) //https://github.com/square/kotlinpoet#spaces-wrap-by-default
-                .addSuperinterfaces(baseSpec.superinterfaces.map { it.key })
-                .addModifiers(KModifier.ABSTRACT)
+            .superclass(targetMirror.asTypeName())
+            .primaryConstructor(
+                FunSpec.constructorBuilder()
+                    .addParameter("world", NMSWorld::class)
+                    .addParameter("type", typeOf<NMSEntityType<*>>().asTypeName())
+                    .build()
+            )
+            //https://github.com/square/kotlinpoet#spaces-wrap-by-default
+            .addSuperclassConstructorParameter("type as EntityTypes<$targetMirror>, world".replace(' ', '·'))
+            .addSuperinterfaces(baseSpec.superinterfaces.map { it.key })
+            .addModifiers(KModifier.ABSTRACT)
 
         fileBuilder.addType(newClass.build())
 
